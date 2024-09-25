@@ -1,0 +1,154 @@
+class Student:
+    def __init__(self, student_id, name, grade):
+        self.student_id = student_id
+        self.name = name
+        self.grade = grade
+
+    def __str__(self):
+        return f"{self.student_id} - {self.name} - {self.grade}"
+
+
+class Course:
+    def __init__(self, course_id, name):
+        self.course_id = course_id
+        self.name = name
+        self.students = []
+
+    def add_student(self, student):
+        self.students.append(student)
+
+    def __str__(self):
+        student_list = ', '.join([student.name for student in self.students]) if self.students else "No students enrolled"
+        return f"{self.course_id} - {self.name} - Students: {student_list}"
+
+
+class School:
+    def __init__(self):
+        self.students = {}
+        self.courses = {}
+        self.user_accounts = {}
+
+    def sign_up(self, username, password):
+        if username in self.user_accounts:
+            print("Username already exists.")
+        else:
+            self.user_accounts[username] = password
+            print("User signed up successfully.")
+
+    def sign_in(self, username, password):
+        if self.user_accounts.get(username) == password:
+            print("Sign in successful.")
+            return True
+        else:
+            print("Invalid credentials.")
+            return False
+
+    def add_student(self, student_id, name, grade):
+        if student_id in self.students:
+            print("Student already exists.")
+        else:
+            self.students[student_id] = Student(student_id, name, grade)
+            print("Student added successfully.")
+
+    def add_course(self, course_id, name):
+        if course_id in self.courses:
+            print("Course already exists.")
+        else:
+            self.courses[course_id] = Course(course_id, name)
+            print("Course added successfully.")
+
+    def enroll_student_in_course(self, student_id, course_id):
+        if student_id not in self.students:
+            print("Student not found.")
+        elif course_id not in self.courses:
+            print("Course not found.")
+        else:
+            student = self.students[student_id]
+            course = self.courses[course_id]
+            course.add_student(student)
+            print(f"Student {student.name} enrolled in course {course.name}.")
+
+    def display_students(self):
+        if not self.students:
+            print("No students available.")
+        else:
+            for student in self.students.values():
+                print(student)
+
+    def display_courses(self):
+        if not self.courses:
+            print("No courses available.")
+        else:
+            for course in self.courses.values():
+                print(course)
+
+
+def main():
+    college = School()  # Corrected instantiation
+
+    while True:
+        print("\nWelcome to the College Management System")
+        print("1. Sign Up")
+        print("2. Sign In")
+        print("3. Exit")
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            username = input("Enter username: ")
+            password = input("Enter password: ")
+            college.sign_up(username, password)
+
+        elif choice == '2':
+            username = input("Enter username: ")
+            password = input("Enter password: ")
+            if college.sign_in(username, password):
+                while True:
+                    print("\nCollege Management System Menu")
+                    print("1. Add Student")
+                    print("2. Add Course")
+                    print("3. Enroll Student in Course")
+                    print("4. Display Students")
+                    print("5. Display Courses")
+                    print("6. Sign Out")
+
+                    choice = input("Enter your choice: ")
+
+                    if choice == '1':
+                        student_id = input("Enter student ID: ")
+                        name = input("Enter student name: ")
+                        grade = input("Enter student grade: ")
+                        college.add_student(student_id, name, grade)
+
+                    elif choice == '2':
+                        course_id = input("Enter course ID: ")
+                        name = input("Enter course name: ")
+                        college.add_course(course_id, name)
+
+                    elif choice == '3':
+                        student_id = input("Enter student ID: ")
+                        course_id = input("Enter course ID: ")
+                        college.enroll_student_in_course(student_id, course_id)
+
+                    elif choice == '4':
+                        college.display_students()
+
+                    elif choice == '5':
+                        college.display_courses()
+
+                    elif choice == '6':
+                        print("Signing out...")
+                        break
+
+                    else:
+                        print("Invalid choice. Please try again.")
+
+        elif choice == '3':
+            print("Exiting...")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
+
+
+if __name__ == "__main__":
+    main()
